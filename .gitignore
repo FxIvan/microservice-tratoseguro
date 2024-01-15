@@ -19,5 +19,5 @@
 
 # Go workspace file
 go.work
-
+/transactions/cmd/app/.env
 /transactions/mongo

@@ -23,6 +23,4 @@ func (app *application) insert(w http.ResponseWriter, r *http.Request) {
 	}
 
 	json.NewEncoder(w).Encode(insertResult)
-
-	app.infoLog.Println("Insert transaction")
 }

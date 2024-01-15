@@ -10,6 +10,7 @@ import (
 	"time"
 
 	mongodb "github.com/fxivan/microservicio/transactions/pkg/models/mongodb"
+	"github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -26,9 +27,15 @@ func main() {
 	//Linea de comando
 	//Ejemplo de como se ejecuta los flag
 	//go run main.go -serverAddr=":8080"
+	appEnv, err := godotenv.Read(".env"); 
+	
+	if err != nil {
+		log.Println("No .env file found")
+	}
+	//appEnv := bootstrap.NewEnv()
 	serverAddr := flag.String("serverAddr", "", "HTTP server network address")
 	serverPort := flag.Int("serverPort", 4000, "HTTP server network port")
-	mongoURI := flag.String("mongoURI", "mongodb://root:secret@localhost:27017/transactions?authSource=admin", "MongoDB connection URI")
+	mongoURI := flag.String("mongoURI", fmt.Sprintf("mongodb://%s:%s@%s:%d/%s?authSource=admin", appEnv["MONGO_USER"], appEnv["MONGO_PASSWORD"] , "localhost", 27017, "transactions"), "MongoDB connection URI")
 	mongoDatabase := flag.String("mongoDatabase", "transactions", "MongoDB database")	
 	//enableCredentials := flag.Bool("enableCredentials", false, "Enable HTTP basic authentication")
 	flag.Parse()
