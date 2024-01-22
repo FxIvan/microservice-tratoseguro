@@ -18,7 +18,7 @@ import (
 type application struct{
 	errorLog *log.Logger
 	infoLog *log.Logger
-	users *mongodb.UserSignInModel
+	users *mongodb.UserSignupModel
 }
 
 func main() {
@@ -62,7 +62,7 @@ func main() {
 	app := &application{
 		errorLog: errorLog,
 		infoLog: infoLog,
-		users: &mongodb.UserSignInModel{
+		users: &mongodb.UserSignupModel{
 			C: client.Database(*mondoDatabase).Collection("users"),
 		},
 	}

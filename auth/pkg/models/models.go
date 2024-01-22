@@ -5,7 +5,7 @@ type UserLogin struct {
 	Password string `json:password`
 }
 
-type UserSingIn struct {
+type UserSignup struct {
 	Username        string `json:username`
 	Password        string `json:password`
 	ConfirmPassword string `json:confirmPassword`

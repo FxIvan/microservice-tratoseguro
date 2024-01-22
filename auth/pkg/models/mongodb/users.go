@@ -8,12 +8,12 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-type UserSignInModel struct{
+type UserSignupModel struct{
 		C *mongo.Collection
 }
 
-func (m UserSignInModel) InsertRegisterUser(userSignIn *models.UserSingIn) (*response.Response, error){
-	_ ,err := m.C.InsertOne(context.TODO(),userSignIn)
+func (m UserSignupModel) InsertRegisterUser(userSignup *models.UserSignup) (*response.Response, error){
+	_ ,err := m.C.InsertOne(context.TODO(),userSignup)
 	if err != nil {
 		return nil,err
 	}

@@ -7,7 +7,7 @@ import (
 	"github.com/fxivan/microservicio/auth/pkg/models"
 )
 func (app *application) insert(w http.ResponseWriter, r *http.Request){
-	var m models.UserSingIn
+	var m models.UserSignup
 
 	err := json.NewDecoder(r.Body).Decode(&m)
 

@@ -7,6 +7,7 @@ import (
 func (app *application) routes() *mux.Router{
 	r := mux.NewRouter()
 
-	r.HandleFunc("/api/singin", app.insert).Methods("POST")
+	r.HandleFunc("/api/signup", app.insert).Methods("POST")
+	//r.HandleFunc("/api/")
 	return r
 }
