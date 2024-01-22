@@ -21,3 +21,5 @@
 go.work
 /transactions/cmd/app/.env
 /transactions/mongo
+/auth/mongo
+/auth/cmd/app/.env
