@@ -8,6 +8,6 @@ func (app *application) routes() *mux.Router{
 	r := mux.NewRouter()
 
 	r.HandleFunc("/api/signup", app.insert).Methods("POST")
-	//r.HandleFunc("/api/")
+	r.HandleFunc("/api/signin", app.signin).Methods("POST")
 	return r
 }
