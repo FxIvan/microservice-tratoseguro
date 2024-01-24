@@ -15,35 +15,35 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-type application struct{
+type application struct {
 	errorLog *log.Logger
-	infoLog *log.Logger
-	users *mongodb.UserSignupModel
+	infoLog  *log.Logger
+	users    *mongodb.UserSignupModel
 }
 
 func main() {
-	appEnv,err := godotenv.Read(".env"); 
+	appEnv, err := godotenv.Read(".env")
 
 	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
 	errorLog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
-	
-	if err != nil{
+
+	if err != nil {
 		log.Println("No .env file")
 	}
-	serverAddr	:= flag.String("serverAddr","","HTTP server network address")
-	serverPort	:= flag.Int("serverPort",4000,"HTTP server network port")
-	mongoURI	:= flag.String("mongoURI", fmt.Sprintf("mongodb://%s:%s@%s:%d/%s?authSource=admin",appEnv["MONGO_USER"],appEnv["MONGO_PASSWORD"],"localhost",27018,"user"),"Mongo Connection Uri")
+	serverAddr := flag.String("serverAddr", "", "HTTP server network address")
+	serverPort := flag.Int("serverPort", 4000, "HTTP server network port")
+	mongoURI := flag.String("mongoURI", fmt.Sprintf("mongodb://%s:%s@%s:%d/%s?authSource=admin", appEnv["MONGO_USER"], appEnv["MONGO_PASSWORD"], "localhost", 27018, "user"), "Mongo Connection Uri")
 	mondoDatabase := flag.String("mongoDatabase", "users", "MongoDB database")
-	flag.Parse()	
-	
+	flag.Parse()
+
 	co := options.Client().ApplyURI(*mongoURI)
 
-	client , err := mongo.NewClient(co)
-	if err != nil{
+	client, err := mongo.NewClient(co)
+	if err != nil {
 		panic(err)
 	}
 
-	ctx , cancel := context.WithTimeout(context.Background(),20*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
 
 	defer cancel()
 
@@ -53,15 +53,15 @@ func main() {
 		panic(err)
 	}
 
-	defer func(){
-		if err = client.Disconnect(ctx); err != nil{
+	defer func() {
+		if err = client.Disconnect(ctx); err != nil {
 			panic(err)
 		}
 	}()
 
 	app := &application{
 		errorLog: errorLog,
-		infoLog: infoLog,
+		infoLog:  infoLog,
 		users: &mongodb.UserSignupModel{
 			C: client.Database(*mondoDatabase).Collection("users"),
 		},
@@ -70,11 +70,11 @@ func main() {
 	serverURI := fmt.Sprintf("%s:%d", *serverAddr, *serverPort)
 
 	srv := &http.Server{
-		Addr: serverURI,
-		ErrorLog: errorLog,
-		Handler: app.routes(),
-		IdleTimeout: time.Minute,
-		ReadTimeout: 5 * time.Second,
+		Addr:         serverURI,
+		ErrorLog:     errorLog,
+		Handler:      app.routes(),
+		IdleTimeout:  time.Minute,
+		ReadTimeout:  5 * time.Second,
 		WriteTimeout: 10 * time.Second,
 	}
 

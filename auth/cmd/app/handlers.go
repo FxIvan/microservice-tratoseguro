@@ -7,12 +7,13 @@ import (
 
 	"github.com/fxivan/microservicio/auth/pkg/models"
 )
-func (app *application) insert(w http.ResponseWriter, r *http.Request){
+
+func (app *application) insert(w http.ResponseWriter, r *http.Request) {
 	var m models.UserSignup
-	fmt.Println("Insertando Usuario",m)
+	fmt.Println("Insertando Usuario", m)
 	err := json.NewDecoder(r.Body).Decode(&m)
 
-	if err != nil{
+	if err != nil {
 		app.errorLog.Println(err)
 	}
 
@@ -27,12 +28,12 @@ func (app *application) insert(w http.ResponseWriter, r *http.Request){
 
 }
 
-func (app *application) signin(w http.ResponseWriter, r *http.Request){
+func (app *application) signin(w http.ResponseWriter, r *http.Request) {
 	var m models.UserLogin
 	err := json.NewDecoder(r.Body).Decode(&m)
-	if err !=nil{
+	if err != nil {
 		app.errorLog.Println(err)
 	}
-	userSingIn , err := app.users.FindUserEmail(m.Username)
-	fmt.Println("Informacion del usuario: ",userSingIn)
+	userSingIn, err := app.users.FindUserEmail(m.Username)
+	fmt.Println("Informacion del usuario: ", userSingIn)
 }
