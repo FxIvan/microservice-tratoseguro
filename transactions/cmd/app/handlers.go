@@ -15,7 +15,7 @@ func (app *application) insert(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	insertResult , err := app.transactions.InsertTransaction(&m)
+	insertResult, err := app.transactions.InsertTransaction(&m)
 	if err != nil {
 		app.errorLog.Println(err)
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)

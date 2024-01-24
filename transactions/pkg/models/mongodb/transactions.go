@@ -13,9 +13,8 @@ type TransactionModel struct {
 	C *mongo.Collection
 }
 
-
-func (m *TransactionModel) InsertTransaction(transaction *models.Transaction) (*response.Response,error) {
-	result , err := m.C.InsertOne(context.TODO(), transaction)
+func (m *TransactionModel) InsertTransaction(transaction *models.Transaction) (*response.Response, error) {
+	result, err := m.C.InsertOne(context.TODO(), transaction)
 	if err != nil {
 		return nil, err
 	}

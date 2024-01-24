@@ -15,28 +15,26 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-
 type application struct {
-	errorLog *log.Logger
-	infoLog *log.Logger
+	errorLog     *log.Logger
+	infoLog      *log.Logger
 	transactions *mongodb.TransactionModel
 }
-
 
 func main() {
 	//Linea de comando
 	//Ejemplo de como se ejecuta los flag
 	//go run main.go -serverAddr=":8080"
-	appEnv, err := godotenv.Read(".env"); 
-	
+	appEnv, err := godotenv.Read(".env")
+
 	if err != nil {
 		log.Println("No .env file found")
 	}
 	//appEnv := bootstrap.NewEnv()
 	serverAddr := flag.String("serverAddr", "", "HTTP server network address")
 	serverPort := flag.Int("serverPort", 4000, "HTTP server network port")
-	mongoURI := flag.String("mongoURI", fmt.Sprintf("mongodb://%s:%s@%s:%d/%s?authSource=admin", appEnv["MONGO_USER"], appEnv["MONGO_PASSWORD"] , "localhost", 27017, "transactions"), "MongoDB connection URI")
-	mongoDatabase := flag.String("mongoDatabase", "transactions", "MongoDB database")	
+	mongoURI := flag.String("mongoURI", fmt.Sprintf("mongodb://%s:%s@%s:%d/%s?authSource=admin", appEnv["MONGO_USER"], appEnv["MONGO_PASSWORD"], "localhost", 27017, "transactions"), "MongoDB connection URI")
+	mongoDatabase := flag.String("mongoDatabase", "transactions", "MongoDB database")
 	//enableCredentials := flag.Bool("enableCredentials", false, "Enable HTTP basic authentication")
 	flag.Parse()
 
@@ -45,8 +43,8 @@ func main() {
 
 	co := options.Client().ApplyURI(*mongoURI)
 
-	client , err := mongo.NewClient(co)
-	if err != nil{
+	client, err := mongo.NewClient(co)
+	if err != nil {
 		errorLog.Fatal(err)
 	}
 
@@ -55,19 +53,19 @@ func main() {
 	defer cancel()
 
 	err = client.Connect(ctx)
-	if err != nil{
+	if err != nil {
 		errorLog.Fatal(err)
 	}
 
-	defer func(){
-		if err = client.Disconnect(ctx); err != nil{
+	defer func() {
+		if err = client.Disconnect(ctx); err != nil {
 			errorLog.Fatal(err)
 		}
 	}()
- 
+
 	app := &application{
 		errorLog: errorLog,
-		infoLog: infoLog,
+		infoLog:  infoLog,
 		transactions: &mongodb.TransactionModel{
 			C: client.Database(*mongoDatabase).Collection("transactions"),
 		},
@@ -75,11 +73,11 @@ func main() {
 
 	serverURI := fmt.Sprintf("%s:%d", *serverAddr, *serverPort)
 	srv := &http.Server{
-		Addr: serverURI,
-		ErrorLog: errorLog,
-		Handler: app.routes(),
-		IdleTimeout: time.Minute,
-		ReadTimeout: 5 * time.Second,
+		Addr:         serverURI,
+		ErrorLog:     errorLog,
+		Handler:      app.routes(),
+		IdleTimeout:  time.Minute,
+		ReadTimeout:  5 * time.Second,
 		WriteTimeout: 10 * time.Second,
 	}
 

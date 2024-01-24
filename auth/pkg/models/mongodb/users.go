@@ -9,14 +9,14 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-type UserSignupModel struct{
-		C *mongo.Collection
+type UserSignupModel struct {
+	C *mongo.Collection
 }
 
-func (m UserSignupModel) InsertRegisterUser(userSignup *models.UserSignup) (*response.Response, error){
-	_ ,err := m.C.InsertOne(context.TODO(),userSignup)
+func (m UserSignupModel) InsertRegisterUser(userSignup *models.UserSignup) (*response.Response, error) {
+	_, err := m.C.InsertOne(context.TODO(), userSignup)
 	if err != nil {
-		return nil,err
+		return nil, err
 	}
 
 	response := &response.Response{
@@ -25,12 +25,12 @@ func (m UserSignupModel) InsertRegisterUser(userSignup *models.UserSignup) (*res
 		Code:    200,
 	}
 
-	return response,nil
+	return response, nil
 }
 
 func (m UserSignupModel) FindUserEmail(username string) (*models.UserSignup, error) {
 	var user models.UserSignup
-	filter := bson.M{"username":username}
+	filter := bson.M{"username": username}
 	err := m.C.FindOne(context.TODO(), filter).Decode(&user)
 	if err != nil {
 		return nil, err
