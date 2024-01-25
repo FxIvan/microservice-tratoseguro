@@ -6,6 +6,7 @@ type UserLogin struct {
 }
 
 type UserSignup struct {
+	ID         string `bson:"_id"`
 	Username   string `json:username`
 	Password   string `json:password`
 	Email      string `json:email`
