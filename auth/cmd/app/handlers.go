@@ -9,6 +9,7 @@ import (
 
 	"github.com/fxivan/microservicio/auth/pkg/functions"
 	"github.com/fxivan/microservicio/auth/pkg/models"
+	"github.com/fxivan/microservicio/auth/pkg/response"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/joho/godotenv"
 )
@@ -29,7 +30,11 @@ func (app *application) insert(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	json.NewEncoder(w).Encode(insertResult)
+	w.Header().Set("Content-Type", "application/json")
+	if err := json.NewEncoder(w).Encode(insertResult); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 
 }
 
@@ -44,7 +49,19 @@ func (app *application) signin(w http.ResponseWriter, r *http.Request) {
 
 	result := functions.CheckPasswordMatch(userSingIn.Password, m.Password)
 	if result == false {
-		http.Error(w, "Contraseña incorrecta", 405)
+
+		resposeError := &response.Response{
+			Status:  false,
+			Message: "Error, contraseña o usuario incorrecto",
+			Code:    400,
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		if err := json.NewEncoder(w).Encode(resposeError); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
 		return
 	}
 
@@ -84,12 +101,15 @@ func (app *application) signin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response := map[string]interface{}{
-		"status":  "success",
-		"message": jwtString,
-		"code":    200,
+	response := &response.Response{
+		Status:  true,
+		Message: jwtString,
+		Code:    200,
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(response)
+	if err := json.NewEncoder(w).Encode(response); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 }

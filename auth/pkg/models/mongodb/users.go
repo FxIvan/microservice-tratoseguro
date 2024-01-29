@@ -46,7 +46,7 @@ func (m UserSignupModel) InsertRegisterUser(userSignup *models.UserSignup) (*res
 	}
 
 	response := &response.Response{
-		Status:  "success",
+		Status:  true,
 		Message: "Created user .",
 		Code:    200,
 	}
