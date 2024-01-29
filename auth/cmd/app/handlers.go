@@ -7,9 +7,10 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/fxivan/microservicio/auth/pkg/functions"
 	"github.com/fxivan/microservicio/auth/pkg/models"
 	"github.com/golang-jwt/jwt/v5"
-	"golang.org/x/crypto/bcrypt"
+	"github.com/joho/godotenv"
 )
 
 func (app *application) insert(w http.ResponseWriter, r *http.Request) {
@@ -34,20 +35,27 @@ func (app *application) insert(w http.ResponseWriter, r *http.Request) {
 
 func (app *application) signin(w http.ResponseWriter, r *http.Request) {
 	var m models.UserLogin
+
 	err := json.NewDecoder(r.Body).Decode(&m)
 	if err != nil {
 		app.errorLog.Println(err)
 	}
 	userSingIn, err := app.users.FindUserEmail(m.Username)
 
-	err = bcrypt.CompareHashAndPassword([]byte(userSingIn.Password), []byte(m.Password))
-	if err != nil {
-		app.errorLog.Println("Contraseña o usuario incorrecto")
+	result := functions.CheckPasswordMatch(userSingIn.Password, m.Password)
+	if result == false {
+		http.Error(w, "Contraseña incorrecta", 405)
 		return
 	}
 
-	JWTExpirationMs := "86400000"
-	JWTSecret := "R1BYcTVXVGNDU2JmWHVnZ1lnN0FKeGR3cU1RUU45QXV4SDJONFZ3ckhwS1N0ZjNCYVkzZ0F4RVBSS1UzRENwRw=="
+	appEnv, err := godotenv.Read(".env")
+	if err != nil {
+		app.errorLog.Println(err)
+		return
+	}
+
+	JWTExpirationMs := appEnv["JWTExpirationMs"]
+	JWTSecret := appEnv["JWTSecret"]
 
 	expireTimeMs, _ := strconv.Atoi(JWTExpirationMs)
 
@@ -76,6 +84,12 @@ func (app *application) signin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Println(jwtString)
+	response := map[string]interface{}{
+		"status":  "success",
+		"message": jwtString,
+		"code":    200,
+	}
 
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(response)
 }
