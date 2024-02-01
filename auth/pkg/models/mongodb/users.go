@@ -2,10 +2,9 @@ package mongodb
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/fxivan/microservicio/auth/pkg/models"
-	"github.com/fxivan/microservicio/auth/pkg/response"
+	"github.com/fxivan/microservicio/auth/pkg/sendgrid"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"golang.org/x/crypto/bcrypt"
@@ -20,11 +19,28 @@ func HashBcrypt(text string) (string, error) {
 	return string(hash), err
 }
 
-func (m UserSignupModel) InsertRegisterUser(userSignup *models.UserSignup) (*response.Response, error) {
-
-	fmt.Println("Insertando Usuario", userSignup)
+func (m UserSignupModel) InsertRegisterUser(userSignup *models.UserSignup) (string, bool) {
 
 	encryptedPassword, err := HashBcrypt(userSignup.Password)
+	if err != nil {
+		return "Error en la encriptacion de la contraseña", false
+	}
+	filterUsername := bson.M{"username": userSignup.Username}
+
+	findUsername := m.C.FindOne(context.Background(), filterUsername)
+
+	if findUsername.Err() == nil {
+		return "El usuario ya existe", false
+	}
+
+	filterEmail := bson.M{"email": userSignup.Email}
+
+	findEmail := m.C.FindOne(context.Background(), filterEmail)
+	if findEmail.Err() == nil {
+		return "El email ya existe", false
+	}
+
+	sendgrid.SendEmailSengrid(userSignup.Email, "Este es un mensaje de testeo")
 
 	_, err = m.C.InsertOne(context.TODO(), bson.M{
 		"username":   userSignup.Username,
@@ -42,24 +58,20 @@ func (m UserSignupModel) InsertRegisterUser(userSignup *models.UserSignup) (*res
 		"active":     userSignup.Active,
 	})
 	if err != nil {
-		return nil, err
+		return "Error al insertar el usuario", false
 	}
 
-	response := &response.Response{
-		Status:  true,
-		Message: "Created user .",
-		Code:    200,
-	}
-
-	return response, nil
+	return "Usuario insertado correctamente", true
 }
 
-func (m UserSignupModel) FindUserEmail(username string) (*models.UserSignup, error) {
+func (m UserSignupModel) FindUsername(username string) (*models.UserSignup, error) {
 	var user models.UserSignup
+
 	filter := bson.M{"username": username}
 	err := m.C.FindOne(context.TODO(), filter).Decode(&user)
 	if err != nil {
 		return nil, err
 	}
+
 	return &user, nil
 }

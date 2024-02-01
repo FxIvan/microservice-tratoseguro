@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"strconv"
 	"time"
@@ -16,22 +15,34 @@ import (
 
 func (app *application) insert(w http.ResponseWriter, r *http.Request) {
 	var m models.UserSignup
-	fmt.Println("Insertando Usuario", m)
+
 	err := json.NewDecoder(r.Body).Decode(&m)
 
 	if err != nil {
 		app.errorLog.Println(err)
 	}
 
-	insertResult, err := app.users.InsertRegisterUser(&m)
-	if err != nil {
+	responseInsert, status := app.users.InsertRegisterUser(&m)
+
+	if err != nil || status == false {
+		responseError := &response.Response{
+			Status:  false,
+			Message: responseInsert,
+			Code:    400,
+		}
 		app.errorLog.Println(err)
-		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		response.HttpResponseError(w, responseError)
 		return
 	}
 
+	responseSucc := &response.Response{
+		Status:  true,
+		Message: responseInsert,
+		Code:    200,
+	}
+
 	w.Header().Set("Content-Type", "application/json")
-	if err := json.NewEncoder(w).Encode(insertResult); err != nil {
+	if err := json.NewEncoder(w).Encode(responseSucc); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -44,9 +55,19 @@ func (app *application) signin(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&m)
 	if err != nil {
 		app.errorLog.Println(err)
+		return
 	}
-	userSingIn, err := app.users.FindUserEmail(m.Username)
-
+	userSingIn, err := app.users.FindUsername(m.Username)
+	if err != nil {
+		app.errorLog.Println(err)
+		responseError := &response.Response{
+			Status:  false,
+			Message: "Necessary to register first",
+			Code:    400,
+		}
+		response.HttpResponseError(w, responseError)
+		return
+	}
 	result := functions.CheckPasswordMatch(userSingIn.Password, m.Password)
 	if result == false {
 
@@ -55,13 +76,7 @@ func (app *application) signin(w http.ResponseWriter, r *http.Request) {
 			Message: "Error, contraseña o usuario incorrecto",
 			Code:    400,
 		}
-
-		w.Header().Set("Content-Type", "application/json")
-		if err := json.NewEncoder(w).Encode(resposeError); err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-
+		response.HttpResponseError(w, resposeError)
 		return
 	}
 
