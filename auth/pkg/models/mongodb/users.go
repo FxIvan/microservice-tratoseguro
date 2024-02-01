@@ -19,12 +19,13 @@ func HashBcrypt(text string) (string, error) {
 	return string(hash), err
 }
 
-func (m UserSignupModel) InsertRegisterUser(userSignup *models.UserSignup) (string, bool) {
+func (m UserSignupModel) RegisterUser(userSignup *models.UserSignup) (string, bool) {
 
 	encryptedPassword, err := HashBcrypt(userSignup.Password)
 	if err != nil {
 		return "Error en la encriptacion de la contraseña", false
 	}
+
 	filterUsername := bson.M{"username": userSignup.Username}
 
 	findUsername := m.C.FindOne(context.Background(), filterUsername)
@@ -58,10 +59,10 @@ func (m UserSignupModel) InsertRegisterUser(userSignup *models.UserSignup) (stri
 		"active":     userSignup.Active,
 	})
 	if err != nil {
-		return "Error al insertar el usuario", false
+		return "Error al crear al usuario", false
 	}
 
-	return "Usuario insertado correctamente", true
+	return "Usuario creado correctamente", true
 }
 
 func (m UserSignupModel) FindUsername(username string) (*models.UserSignup, error) {

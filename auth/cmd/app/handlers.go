@@ -13,18 +13,25 @@ import (
 	"github.com/joho/godotenv"
 )
 
-func (app *application) insert(w http.ResponseWriter, r *http.Request) {
+func (app *application) signup(w http.ResponseWriter, r *http.Request) {
 	var m models.UserSignup
 
 	err := json.NewDecoder(r.Body).Decode(&m)
 
 	if err != nil {
 		app.errorLog.Println(err)
+		responseError := &response.Response{
+			Status:  false,
+			Message: "Error al decodificar el json",
+			Code:    400,
+		}
+		response.HttpResponseError(w, responseError)
+		return
 	}
 
-	responseInsert, status := app.users.InsertRegisterUser(&m)
+	responseInsert, status := app.users.RegisterUser(&m)
 
-	if err != nil || status == false {
+	if status == false {
 		responseError := &response.Response{
 			Status:  false,
 			Message: responseInsert,
