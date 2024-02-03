@@ -62,6 +62,12 @@ func (app *application) signin(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&m)
 	if err != nil {
 		app.errorLog.Println(err)
+		responseError := &response.Response{
+			Status:  false,
+			Message: "Error en la request",
+			Code:    400,
+		}
+		response.HttpResponseError(w, responseError)
 		return
 	}
 	userSingIn, err := app.users.FindUsername(m.Username)
@@ -77,7 +83,6 @@ func (app *application) signin(w http.ResponseWriter, r *http.Request) {
 	}
 	result := functions.CheckPasswordMatch(userSingIn.Password, m.Password)
 	if result == false {
-
 		resposeError := &response.Response{
 			Status:  false,
 			Message: "Error, contraseña o usuario incorrecto",
@@ -90,6 +95,12 @@ func (app *application) signin(w http.ResponseWriter, r *http.Request) {
 	appEnv, err := godotenv.Read(".env")
 	if err != nil {
 		app.errorLog.Println(err)
+		responseError := &response.Response{
+			Status:  false,
+			Message: "Error Interno",
+			Code:    400,
+		}
+		response.HttpResponseError(w, responseError)
 		return
 	}
 
