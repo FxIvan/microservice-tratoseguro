@@ -29,6 +29,31 @@ func (app *application) signup(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	/* Este es un Ejemplo de como se puede obtener el email y el ID del token
+	email, ok := r.Context().Value("email").(string)
+	if !ok {
+		app.errorLog.Println(err)
+		responseError := &response.Response{
+			Status:  false,
+			Message: "Error al capturar el email",
+			Code:    400,
+		}
+		response.HttpResponseError(w, responseError)
+		return
+	}
+
+	ID, ok := r.Context().Value("ID").(string)
+	if !ok {
+		app.errorLog.Println(err)
+		responseError := &response.Response{
+			Status:  false,
+			Message: "Error al capturar el ID",
+			Code:    400,
+		}
+		response.HttpResponseError(w, responseError)
+		return
+	}
+	*/
 	responseInsert, status := app.users.RegisterUser(&m)
 
 	if status == false {
