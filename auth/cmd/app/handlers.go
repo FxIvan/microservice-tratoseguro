@@ -62,7 +62,7 @@ func (app *application) signup(w http.ResponseWriter, r *http.Request) {
 			Message: responseInsert,
 			Code:    400,
 		}
-		app.errorLog.Println(err)
+		app.errorLog.Println("Error al insertar el usuario")
 		response.HttpResponseError(w, responseError)
 		return
 	}
@@ -78,7 +78,6 @@ func (app *application) signup(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-
 }
 
 func (app *application) signin(w http.ResponseWriter, r *http.Request) {

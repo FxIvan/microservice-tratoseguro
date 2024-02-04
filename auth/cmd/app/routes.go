@@ -6,12 +6,12 @@ import (
 
 func (app *application) routes() *mux.Router {
 	r := mux.NewRouter()
-	
+
 	//Rutas publica
 	//Registro
-	r.HandleFunc("/api/signup", app.signup).Methods("POST")
+	r.HandleFunc("/auth/signup", app.signup).Methods("POST")
 	//Login
-	r.HandleFunc("/api/signin", app.signin).Methods("POST")
+	r.HandleFunc("/auth/signin", app.signin).Methods("POST")
 
 	//Routes with middleware PROTECTED
 	//Example. Importar middleware que esta dentro de pkg
