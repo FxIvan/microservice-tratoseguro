@@ -6,6 +6,7 @@ import (
 	"github.com/fxivan/microservicio/auth/pkg/models"
 	"github.com/fxivan/microservicio/auth/pkg/sendgrid"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -75,4 +76,35 @@ func (m UserSignupModel) FindUsername(username string) (*models.UserSignup, erro
 	}
 
 	return &user, nil
+}
+
+func (m UserSignupModel) PersonalInformation(modelInformation *models.UserSignup, email string, id string) (string, bool) {
+
+	_idModel, _ := primitive.ObjectIDFromHex(id)
+
+	filter := bson.M{"_id": _idModel}
+
+	infoUpdate := bson.M{
+		"$set": bson.M{
+
+			"phone":      modelInformation.Phone,
+			"name":       modelInformation.Name,
+			"lastName":   modelInformation.LastName,
+			"address":    modelInformation.Address,
+			"city":       modelInformation.City,
+			"country":    modelInformation.Country,
+			"postalCode": modelInformation.PostalCode,
+			"building":   modelInformation.Building,
+			"apartment":  modelInformation.Apartment,
+			"dni":        modelInformation.DNI,
+			"gender":     modelInformation.Gender,
+		},
+	}
+
+	_, err := m.C.UpdateOne(context.TODO(), filter, infoUpdate)
+	if err != nil {
+		panic(err)
+	}
+
+	return "Informacion actualizada correctamente", true
 }

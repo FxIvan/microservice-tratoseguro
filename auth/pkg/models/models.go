@@ -6,7 +6,7 @@ type UserLogin struct {
 }
 
 type PhotoObject struct {
-	Size string `json:"size"`
+	Path string `json:"path"`
 }
 
 type UserSignup struct {

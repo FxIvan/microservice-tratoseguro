@@ -1,6 +1,9 @@
 package main
 
 import (
+	"net/http"
+
+	"github.com/fxivan/microservicio/auth/pkg/middleware"
 	"github.com/gorilla/mux"
 )
 
@@ -15,7 +18,8 @@ func (app *application) routes() *mux.Router {
 
 	//Routes with middleware PROTECTED
 	//Example. Importar middleware que esta dentro de pkg
-	//r.Handle("/api/signup", middleware.AuthMiddleware(http.HandlerFunc(app.signup))).Methods("POST")
+	//r.Handle("/auth/info", middleware.AuthMiddleware(http.HandlerFunc(app.personalInformation))).Methods("POST")
+	r.Handle("/auth/info/files", middleware.AuthMiddleware(http.HandlerFunc(app.uploadFiles))).Methods("POST")
 
 	return r
 }

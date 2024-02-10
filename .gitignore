@@ -27,3 +27,5 @@ go.work
 /auth/cmd/app/.env
 /auth/pkg/sendgrid/.env
 /auth/pkg/middleware/.env
+/media/cmd/app/.env
+/media/mongo/.env

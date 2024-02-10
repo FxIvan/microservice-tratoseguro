@@ -2,7 +2,10 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
+	"io"
 	"net/http"
+	"os"
 	"strconv"
 	"time"
 
@@ -169,4 +172,49 @@ func (app *application) signin(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+}
+
+func (app *application) uploadFiles(w http.ResponseWriter, r *http.Request) {
+
+	file, handler, err := r.FormFile("file")
+	fileName := r.FormValue("fileName")
+	if err != nil {
+		panic(err)
+	}
+	defer file.Close()
+
+	f, err := os.OpenFile(handler.Filename, os.O_WRONLY|os.O_CREATE, 0666)
+	if err != nil {
+		panic(err)
+	}
+	defer f.Close()
+	_, _ = io.WriteString(w, "File "+fileName+" Uploaded successfully")
+	_, _ = io.Copy(f, file)
+
+	email, ok := r.Context().Value("email").(string)
+	if !ok {
+		app.errorLog.Println(ok)
+		responseError := &response.Response{
+			Status:  false,
+			Message: "Error al capturar el email",
+			Code:    400,
+		}
+		response.HttpResponseError(w, responseError)
+		return
+	}
+
+	ID, ok := r.Context().Value("ID").(string)
+	if !ok {
+		app.errorLog.Println(ok)
+		responseError := &response.Response{
+			Status:  false,
+			Message: "Error al capturar el ID",
+			Code:    400,
+		}
+		response.HttpResponseError(w, responseError)
+		return
+	}
+	fmt.Println(ID, email)
+	fmt.Println("Manejando solicitud en el API Gateway para /auth/info/files", r)
+
 }
