@@ -29,3 +29,5 @@ go.work
 /auth/pkg/middleware/.env
 /media/cmd/app/.env
 /media/mongo/.env
+/media/pkg/middleware/.env
+/media/cmd/app/uploads
