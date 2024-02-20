@@ -11,8 +11,8 @@ services:
       MONGO_INITDB_DATABASE: users
     volumes:
       - ./init/init-script.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
-      - ./data:/data/db
-      - ./data/log:/var/log/mongodb/
+      - ./storage:/data/db
+      - ./storage/log:/var/log/mongodb/
     ports:
       - "27018:27017" # Puerto del host:Puerto del contenedor
     env_file:
