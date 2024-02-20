@@ -29,5 +29,8 @@ go.work
 /auth/pkg/middleware/.env
 /media/cmd/app/.env
 /media/mongo/.env
+/media/mongo/data
+/media/mongo/init
 /media/pkg/middleware/.env
 /media/cmd/app/uploads
+

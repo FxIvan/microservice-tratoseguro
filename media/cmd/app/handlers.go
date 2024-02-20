@@ -7,7 +7,9 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 
+	"github.com/fxivan/microservicio/media/pkg/models"
 	"github.com/fxivan/microservicio/media/pkg/response"
 	"github.com/google/uuid"
 )
@@ -40,6 +42,13 @@ func (app *application) uploadImg(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	//Medidas de Seguridad
+	/*
+		1. Tamaño de Archivo
+		2. Restringuir extensiones a ".jpg", ".jpeg", ".png"
+		3. Generar nombre aleatorios
+	*/
+
 	const maxFileSize = 10 << 20
 	if handler.Size > maxFileSize {
 		app.errorLog.Println("El tamaño del archivo excede el límite permitido")
@@ -52,6 +61,19 @@ func (app *application) uploadImg(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	switch filepath.Ext(handler.Filename) {
+	case ".jpg", ".jpeg", ".png":
+		break
+	default:
+		app.errorLog.Println("El formato del archivo no es valido")
+		responseError := &response.Response{
+			Status:  false,
+			Message: "El formato del archivo no es valido",
+			Code:    400,
+		}
+		response.HttpResponseError(w, responseError)
+		return
+	}
 	randomName := uuid.New().String() + filepath.Ext(handler.Filename)
 	f, err := os.Create(filepath.Join("uploads", randomName))
 	if err != nil {
@@ -73,6 +95,39 @@ func (app *application) uploadImg(w http.ResponseWriter, r *http.Request) {
 		responseError := &response.Response{
 			Status:  false,
 			Message: "Error al guardar",
+			Code:    400,
+		}
+		response.HttpResponseError(w, responseError)
+		return
+	}
+
+	ID, ok := r.Context().Value("ID").(string)
+
+	if !ok {
+		app.errorLog.Println(ok)
+		responseError := &response.Response{
+			Status:  false,
+			Message: "Error interno",
+			Code:    400,
+		}
+		response.HttpResponseError(w, responseError)
+		return
+	}
+
+	structJSONImg := &models.ModelPhoto{
+		UserId:    ID,
+		NameImg:   randomName,
+		Size:      handler.Size,
+		CreatedAt: time.Now(),
+	}
+
+	resUploadImage, status := app.photos.UploadImage(structJSONImg, ID)
+
+	if status == false {
+		app.errorLog.Println(resUploadImage)
+		responseError := &response.Response{
+			Status:  false,
+			Message: "Error al cargar la imagen",
 			Code:    400,
 		}
 		response.HttpResponseError(w, responseError)

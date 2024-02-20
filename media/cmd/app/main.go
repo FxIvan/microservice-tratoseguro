@@ -8,7 +8,8 @@ import (
 	"net/http"
 	"os"
 	"time"
-	"github.com/fxivan/microservicio/media/pkg/model/mongo"
+
+	"github.com/fxivan/microservicio/media/pkg/models/mongo"
 	"github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
