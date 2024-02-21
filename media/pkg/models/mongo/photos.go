@@ -12,7 +12,7 @@ type PhotosModel struct {
 	C *mongo.Collection
 }
 
-func (m PhotosModel) UploadImage(photoModel *models.ModelPhoto, idUser string) (string, bool) {
+func (m PhotosModel) UploadImage(photoModel *models.ModelPhoto) (string, bool) {
 	_, err := m.C.InsertOne(context.TODO(), bson.M{
 		"userId":    photoModel.UserId,
 		"nameImg":   photoModel.NameImg,

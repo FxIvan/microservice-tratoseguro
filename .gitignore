@@ -28,6 +28,7 @@ go.work
 /auth/pkg/sendgrid/.env
 /auth/pkg/middleware/.env
 /media/cmd/app/.env
+/media/cmd/app/files
 /media/mongo/.env
 /media/mongo/storage
 /media/mongo/init
