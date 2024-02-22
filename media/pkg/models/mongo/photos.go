@@ -16,6 +16,7 @@ func (m PhotosModel) UploadImage(photoModel *models.ModelPhoto) (string, bool) {
 	_, err := m.C.InsertOne(context.TODO(), bson.M{
 		"userId":    photoModel.UserId,
 		"nameImg":   photoModel.NameImg,
+		"field":     photoModel.Field,
 		"size":      photoModel.Size,
 		"createdAt": photoModel.CreatedAt,
 	})

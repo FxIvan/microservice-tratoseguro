@@ -6,6 +6,7 @@ type ModelPhoto struct {
 	UserId    string    `json:"userId"`
 	NameImg   string    `json:nameImg`
 	Size      int64     `json:size`
+	Field     string    `json:field`
 	CreatedAt time.Time `json:createdAt`
 }
 
