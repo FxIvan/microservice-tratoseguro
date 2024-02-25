@@ -10,7 +10,6 @@ import (
 	"time"
 
 	"github.com/fxivan/microservicio/media/pkg/models/mongo"
-	"github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -25,20 +24,21 @@ type application struct {
 func main() {
 
 	//Leemos el .ENV
-	appEnv, err := godotenv.Read(".env")
+	//appEnv, err := godotenv.Read(".env")
 
 	//Generamos Logs para mostrar en la Shell
 	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
 	errorLog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
 
-	if err != nil {
+	/*if err != nil {
 		errorLog.Println(err)
-	}
+	}*/
 
 	//Configuramos las variables para levantar el Server y DB
 	serverAddr := flag.String("serverAddr", "", "HTTP server network address")
 	serverPort := flag.Int("serverPort", 4000, "HTTP server network port")
-	mongoURI := flag.String("mongoURI", fmt.Sprintf("mongodb://%s:%s@%s:%d/%s?authSource=admin", appEnv["MONGO_USER"], appEnv["MONGO_PASSWORD"], "localhost", 27018, "media"), "Mongo Connection Uri")
+	//mongoURI := flag.String("mongoURI", fmt.Sprintf("mongodb://%s:%s@%s:%d/%s?authSource=admin", appEnv["MONGO_USER"], appEnv["MONGO_PASSWORD"], "localhost", 27018, "media"), "Mongo Connection Uri")
+	mongoURI := flag.String("mongoURI", "mongodb://admtratoseguro210814:LkdU7ZDADARiFEtZiKJUjUeg5Swfyq9dA7qwkqjerkpQZwEvUs@localhost:27018/media?authSource=admin", "Mongo Connection Uri")
 	mongoDB := flag.String("mongodb", "media", "Photos and Files Into MONGO")
 	flag.Parse()
 

@@ -30,8 +30,10 @@ go.work
 /media/cmd/app/.env
 /media/cmd/app/files
 /media/mongo/.env
+/media/.env
+/media/data
 /media/mongo/storage
 /media/mongo/init
 /media/pkg/middleware/.env
 /media/cmd/app/uploads
-
+/db
