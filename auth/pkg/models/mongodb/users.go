@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/fxivan/microservicio/auth/pkg/models"
-	"github.com/fxivan/microservicio/auth/pkg/sendgrid"
+	//"github.com/fxivan/microservicio/auth/pkg/sendgrid"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -39,10 +39,11 @@ func (m UserSignupModel) RegisterUser(userSignup *models.UserSignup) (string, bo
 
 	findEmail := m.C.FindOne(context.Background(), filterEmail)
 	if findEmail.Err() == nil {
+		panic(findEmail.Err())
 		return "El email ya existe", false
 	}
 
-	sendgrid.SendEmailSengrid(userSignup.Email, "Este es un mensaje de testeo")
+	//sendgrid.SendEmailSengrid(userSignup.Email, "Este es un mensaje de testeo")
 
 	_, err = m.C.InsertOne(context.TODO(), bson.M{
 		"username":   userSignup.Username,
@@ -60,6 +61,7 @@ func (m UserSignupModel) RegisterUser(userSignup *models.UserSignup) (string, bo
 		"active":     userSignup.Active,
 	})
 	if err != nil {
+		panic(err)
 		return "Error al crear al usuario", false
 	}
 

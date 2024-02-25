@@ -10,7 +10,6 @@ import (
 	"time"
 
 	mongodb "github.com/fxivan/microservicio/auth/pkg/models/mongodb"
-	"github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -22,17 +21,17 @@ type application struct {
 }
 
 func main() {
-	appEnv, err := godotenv.Read(".env")
 
 	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
 	errorLog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
 
-	if err != nil {
-		log.Println("No .env file")
-	}
+	mongo_user := os.Getenv("MONGO_USER")
+	mongo_password := os.Getenv("MONGO_PASSWORD")
+
 	serverAddr := flag.String("serverAddr", "", "HTTP server network address")
 	serverPort := flag.Int("serverPort", 4000, "HTTP server network port")
-	mongoURI := flag.String("mongoURI", fmt.Sprintf("mongodb://%s:%s@%s:%d/%s?authSource=admin", appEnv["MONGO_USER"], appEnv["MONGO_PASSWORD"], "localhost", 27018, "user"), "Mongo Connection Uri")
+	mongoURI := flag.String("mongoURI", fmt.Sprintf("mongodb://%s:%s@%s:%d/%s?authSource=admin", mongo_user, mongo_password, "mongo", 27017, "user"), "Mongo Connection Uri")
+
 	mondoDatabase := flag.String("mongoDatabase", "users", "MongoDB database")
 	flag.Parse()
 

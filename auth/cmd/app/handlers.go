@@ -13,7 +13,6 @@ import (
 	"github.com/fxivan/microservicio/auth/pkg/models"
 	"github.com/fxivan/microservicio/auth/pkg/response"
 	"github.com/golang-jwt/jwt/v5"
-	"github.com/joho/godotenv"
 )
 
 func (app *application) signup(w http.ResponseWriter, r *http.Request) {
@@ -119,7 +118,6 @@ func (app *application) signin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	appEnv, err := godotenv.Read(".env")
 	if err != nil {
 		app.errorLog.Println(err)
 		responseError := &response.Response{
@@ -131,8 +129,8 @@ func (app *application) signin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	JWTExpirationMs := appEnv["JWTExpirationMs"]
-	JWTSecret := appEnv["JWTSecret"]
+	JWTExpirationMs := os.Getenv("JWTExpirationMs")
+	JWTSecret := os.Getenv("JWTSecret")
 
 	expireTimeMs, _ := strconv.Atoi(JWTExpirationMs)
 

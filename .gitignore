@@ -23,7 +23,9 @@ go.work
 /transactions/mongo
 /auth/mongo/data
 /auth/mongo/init
-/auth/mongo/.env
+/auth/.env
+/auth/storage
+/auth/data
 /auth/cmd/app/.env
 /auth/pkg/sendgrid/.env
 /auth/pkg/middleware/.env

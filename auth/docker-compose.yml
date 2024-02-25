@@ -5,13 +5,13 @@ services:
   mongo:
     image: mongo:latest
     restart: unless-stopped
-    container_name: microservicio-media
+    container_name: microservicio-auth
     networks:
-      - network1
+      - network2
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_DB_USERNAME}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_DB_PASSWORD}
-      MONGO_INITDB_DATABASE: users
+      MONGO_INITDB_DATABASE: user
     volumes:
       - ./data:/data/db
       - ./data/log:/var/log/mongodb/
@@ -23,9 +23,9 @@ services:
   mongo-express:
     image: mongo-express:latest
     restart: unless-stopped
-    container_name: microservicio-media
+    container_name: microservicio-auth-api
     networks:
-      - network1
+      - network2
     environment:
       ME_CONFIG_MONGODB_SERVER: "mongo"
       ME_CONFIG_MONGODB_ADMINUSERNAME: ${MONGO_DB_USERNAME}
@@ -38,23 +38,25 @@ services:
     links:
       - mongo
     ports:
-      - "8081:8081" # Puerto del host:Puerto del contenedor
+      - "8080:8081" # Puerto del host:Puerto del contenedor
     env_file:
       - .env
 
-  golang-media-api:
-    image: ${DOCKER_REGISTRY-}microservicio-media-api
+  golang-auth-api:
+    image: ${DOCKER_REGISTRY-}microservicio-auth-api
     build:
       context: .
       dockerfile: Dockerfile
     ports:
-      - 9091:4000
+      - 9090:4000
     networks:
-      - network1
+      - network2
     environment:
       MONGO_PASSWORD: ${MONGO_PASSWORD}
       MONGO_USER: ${MONGO_USER}
       JWTSecret: ${JWTSecret}
+      JWTExpirationMs: ${JWTExpirationMs}
+      SENDGRID_API_KEY: ${SENDGRID_API_KEY}
 
 networks:
-  network1:
+  network2:
