@@ -95,7 +95,8 @@ func (app *application) uploadImg(w http.ResponseWriter, r *http.Request) {
 	fBack, errBack := os.Create(filepath.Join("uploads", randomNameBack))
 
 	if errFront != nil || errBack != nil {
-		app.errorLog.Println("Error al guardar")
+		app.errorLog.Println("Error al guardar errFront:", errFront)
+		app.errorLog.Println("Error al guardar errBack:", errBack)
 		responseError := &response.Response{
 			Status:  false,
 			Message: "Error al guardar",

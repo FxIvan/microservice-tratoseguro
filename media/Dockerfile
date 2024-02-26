@@ -1,28 +1,36 @@
-# base image
+# Base image
 FROM golang:1.19.3-alpine AS builder
-# create appuser.
-RUN adduser -D -g '' elf
-# create workspace
+
+# Create workspace
 WORKDIR /opt/app/
+
+# Copy go.mod and go.sum
 COPY go.mod go.sum ./
-# fetch dependancies
+
+# Fetch dependencies
 RUN go mod download && \
     go mod verify
-# copy the source code as the last step
+
+# Copy the source code as the last step
 COPY . .
-# build binary
+
+# Build binary
 RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-w -s" -a -installsuffix cgo -o /go/bin/microservicio-media-api ./cmd/app
 
+# Create uploads directory
+RUN mkdir /uploads
 
-# build a small image
+# Build a small image
 FROM alpine:3.17.3
-LABEL language="golang"
-LABEL org.opencontainers.image.source https://github.com/FxIvan/microservice-tratoseguro
-# import the user and group files from the builder
+
+# Copy user and group files from the builder
 COPY --from=builder /etc/passwd /etc/passwd
-# copy the static executable
-COPY --from=builder --chown=elf:1000 /go/bin/microservicio-media-api /microservicio-media-api
-# use a non-root user
-USER elf
-# run app
+
+# Copy the static executable
+COPY --from=builder /go/bin/microservicio-media-api /microservicio-media-api
+
+# Run as root user
+USER root
+
+# Run app
 ENTRYPOINT ["./microservicio-media-api"]

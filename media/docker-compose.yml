@@ -4,26 +4,26 @@ version: "3.1"
 services:
   mongo:
     image: mongo:latest
-    restart: unless-stopped
-    container_name: microservicio-media
+    #restart: unless-stopped
+    container_name: microservicio-media-db
     networks:
       - network1
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_DB_USERNAME}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_DB_PASSWORD}
-      MONGO_INITDB_DATABASE: users
+      MONGO_INITDB_DATABASE: media
     volumes:
       - ./data:/data/db
       - ./data/log:/var/log/mongodb/
     ports:
-      - "27018:27017" # Puerto del host:Puerto del contenedor
+      - "27019:27017" # Puerto del host:Puerto del contenedor
     env_file:
       - .env
 
   mongo-express:
     image: mongo-express:latest
-    restart: unless-stopped
-    container_name: microservicio-media
+    #restart: unless-stopped
+    container_name: microservicio-media-express
     networks:
       - network1
     environment:
@@ -49,6 +49,8 @@ services:
       dockerfile: Dockerfile
     ports:
       - 9091:4000
+    volumes:
+      - ./uploads:/uploads
     networks:
       - network1
     environment:
