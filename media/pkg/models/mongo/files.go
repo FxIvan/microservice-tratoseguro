@@ -26,3 +26,16 @@ func (m FilesModel) AddFile(fileModel *models.ModelFile) (string, bool) {
 
 	return "Contrato Subido", true
 }
+
+func (m FilesModel) FindFile(nameFile string) (*models.ModelFile, bool) {
+
+	var fileModel models.ModelFile
+
+	filter := bson.M{"nameImg": nameFile}
+	err := m.C.FindOne(context.TODO(), filter).Decode(&fileModel)
+	if err != nil {
+		return nil, false
+	}
+
+	return &fileModel, true
+}

@@ -38,5 +38,6 @@ go.work
 /media/mongo/init
 /media/pkg/middleware/.env
 /media/uploads
+/media/files
 /media/init
 /db

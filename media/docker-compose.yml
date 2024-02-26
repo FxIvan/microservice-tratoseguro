@@ -51,6 +51,7 @@ services:
       - 9091:4000
     volumes:
       - ./uploads:/uploads
+      - ./files:/files
     networks:
       - network1
     environment:

@@ -221,6 +221,19 @@ func (app *application) uploadFile(w http.ResponseWriter, r *http.Request) {
 	}
 
 	randomName := uuid.New().String() + filepath.Ext(handler.Filename)
+
+	_, exist := app.files.FindFile(randomName)
+	if exist == true {
+		app.errorLog.Println("Vuelve a cargar la image, hubo un error")
+		responseError := &response.Response{
+			Status:  false,
+			Message: "Vuelve a cargar el contrato, hubo un error",
+			Code:    400,
+		}
+		response.HttpResponseError(w, responseError)
+		return
+	}
+
 	f, err := os.Create(filepath.Join("files", randomName))
 	if err != nil {
 		app.errorLog.Println("El al cargar el archivo")
