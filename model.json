@@ -1,0 +1,74 @@
+{
+    "counterparty":{
+        "idRefCTPY": "string",  
+        "emailCTPY": "string",
+        "linkShareCTPY": "string"
+    },
+    "agreementText":{
+        "text":"string"
+    },
+    "counterparty_signature":{
+        "dni":"string",
+        "fullName":"string",
+        "accepte":"boolean"
+    },
+    "proposing_firm":{
+        "dni":"string",
+        "fullName":"string",
+        "accepte":"boolean"
+    },
+    "agreement_status":{
+        "status":"string",
+        "text":"string"
+    },
+    "contractLinkId":{
+        "id":"number",
+        "password":"string"
+    },
+    "fieldOnePRNE":{
+        "labelName":"string",
+        "name":"string",
+        "type":"string"
+    },
+    "fieldTwoPRNE":{
+        "labelName":"string",
+        "name":"string",
+        "type":"string"
+    }
+}
+
+{
+    "nameFileCTPY":{
+        "name":"string",
+        "path":"string"
+    },
+    "dniFrontCTPY":{
+        "name":"string",
+        "load":"boolean"
+    },
+    "dniBackCTPY":{
+        "name":"string",
+        "load":"boolean"
+    },
+    "locationService":{
+        "name":"string",
+        "load":"boolean"
+    },
+    "email":"string",
+    "face_photo":{
+        "name":"string",
+        "load":"boolean"
+    },
+    "fieldOnePRNE":{
+        "labelName":"string",
+        "name":"string",
+        "load":"boolean",
+        "type":"string"
+    },
+    "fieldTwoPRNE":{
+        "labelName":"string",
+        "name":"string",
+        "load":"boolean",
+        "type":"string"
+    }
+}
