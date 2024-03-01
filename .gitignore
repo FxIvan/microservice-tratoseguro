@@ -41,3 +41,4 @@ go.work
 /media/files
 /media/init
 /db
+/agreement/.env
