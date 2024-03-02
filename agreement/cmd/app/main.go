@@ -69,7 +69,7 @@ func main() {
 
 	serverURI := fmt.Sprintf("%s:%d", *serverAddr, *serverPort)
 
-	srv := http.Server{
+	srv := &http.Server{
 		Addr:         serverURI,
 		ErrorLog:     errorLog,
 		Handler:      app.routes(),

@@ -58,6 +58,8 @@ services:
       MONGO_PASSWORD: ${MONGO_PASSWORD}
       MONGO_USER: ${MONGO_USER}
       JWTSecret: ${JWTSecret}
+    env_file:
+      - docker.env
 
 networks:
   network3:
