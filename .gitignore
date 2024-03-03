@@ -40,7 +40,15 @@ go.work
 /media/uploads
 /media/files
 /media/init
-/db
+/db/auth/data
+/db/auth/init
+/db/auth/.env
+/db/agreement/data
+/db/agreement/init
+/db/agreement/.env
+/db/media/storage
+/db/media/init
+/db/media/.env
 /agreement/docker.env
 /agreement/uploads
 /agreement/data

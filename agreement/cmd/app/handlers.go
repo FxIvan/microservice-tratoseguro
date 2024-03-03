@@ -17,6 +17,6 @@ func (app *application) searchCTPY(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	allUsers := app.
+	fmt.Print("Introducido", &m)
 	return
 }

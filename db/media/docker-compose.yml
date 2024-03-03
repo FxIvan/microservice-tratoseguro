@@ -1,0 +1,39 @@
+version: "20.10"
+
+services:
+  mongo:
+    image: mongo:latest
+    restart: unless-stopped
+    container_name: tradetactica-mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_DB_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_DB_PASSWORD}
+      MONGO_INITDB_DATABASE: users
+    volumes:
+      - ./init/init-script.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+      - ./storage:/data/db
+      - ./storage/log:/var/log/mongodb/
+    ports:
+      - "27018:27017" # Puerto del host:Puerto del contenedor
+    env_file:
+      - .env
+
+  mongo-express:
+    image: mongo-express:latest
+    restart: unless-stopped
+    container_name: tradetactica-express-mongo
+    environment:
+      ME_CONFIG_MONGODB_SERVER: "mongo"
+      ME_CONFIG_MONGODB_ADMINUSERNAME: ${MONGO_DB_USERNAME}
+      ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGO_DB_PASSWORD}
+      ME_CONFIG_MONGODB_PORT: "27017"
+      ME_CONFIG_BASICAUTH_USERNAME: ${MONGO_EXPRESS_USERNAME}
+      ME_CONFIG_BASICAUTH_PASSWORD: ${MONGO_EXPRESS_PASSWORD}
+    depends_on:
+      - mongo
+    links:
+      - mongo
+    ports:
+      - "8082:8081" # Puerto del host:Puerto del contenedor
+    env_file:
+      - .env
