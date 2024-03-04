@@ -1,28 +1,27 @@
-# Use root/example as user/password credentials
+# ESTO NO SIRVE POR EL MOMENTO, EJECUTO DESDE EL DOCKERFILE Y LA DB LA LEVANTO APARTE
 version: "3.1"
 
 services:
   golang-agreement-api:
-    image: ${DOCKER_REGISTRY-}microservicio-api
+    image: ${DOCKER_REGISTRY-}microservicio-agreement-api
     build:
       context: .
       dockerfile: Dockerfile
     ports:
-      - 9092:4000
+      - 9091:4000
     volumes:
       - ./uploads:/uploads
       - ./files:/files
-    networks:
-      - network3
+    #networks:
+    #  - network3
     environment:
-      MONGO_PASSWORD: ${MONGO_PASSWORD}
-      MONGO_USER: ${MONGO_USER}
+      MONGO_PASSWORD: LkdU7ZDADARiFEtZiKJUjUeg5Swfyq9dA7qwkqjerkpQZwEvUs
+      MONGO_USER: admtratoseguro210814
       JWTSecret: ${JWTSecret}
     env_file:
       - .env
 
 networks:
   network3:
-
 #docker build -t almendraivan/microservice-agreement:v0 .
 #docker run  -p 9092:4000 --name codigo-go-agreement almendraivan/microservice-agreement:v0

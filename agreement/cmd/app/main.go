@@ -47,7 +47,14 @@ func main() {
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
+
 	defer cancel()
+
+	err = client.Connect(ctx)
+
+	if err != nil {
+		panic(err)
+	}
 
 	defer func() {
 		if err := client.Disconnect(ctx); err != nil {
@@ -69,10 +76,22 @@ func main() {
 
 	serverURI := fmt.Sprintf("%s:%d", *serverAddr, *serverPort)
 
+	// Handler para registrar las solicitudes
+	handlerWithLogging := func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			infoLog.Printf("Request: %s %s", r.Method, r.URL.Path)
+			next.ServeHTTP(w, r)
+		})
+	}
+
+	// Agrega el middleware de logging al router
+	router := app.routes()
+	router.Use(handlerWithLogging)
+
 	srv := &http.Server{
 		Addr:         serverURI,
 		ErrorLog:     errorLog,
-		Handler:      app.routes(),
+		Handler:      router,
 		IdleTimeout:  time.Minute,
 		ReadTimeout:  5 * time.Second,
 		WriteTimeout: 10 * time.Second,
