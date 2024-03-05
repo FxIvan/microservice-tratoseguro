@@ -9,7 +9,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/fxivan/microservicio/agreement/pkg/models/mongo"
+	mongodb "github.com/fxivan/microservicio/agreement/pkg/models/mongo"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -77,16 +77,9 @@ func main() {
 	serverURI := fmt.Sprintf("%s:%d", *serverAddr, *serverPort)
 
 	// Handler para registrar las solicitudes
-	handlerWithLogging := func(next http.Handler) http.Handler {
-		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			infoLog.Printf("Request: %s %s", r.Method, r.URL.Path)
-			next.ServeHTTP(w, r)
-		})
-	}
 
 	// Agrega el middleware de logging al router
 	router := app.routes()
-	router.Use(handlerWithLogging)
 
 	srv := &http.Server{
 		Addr:         serverURI,
