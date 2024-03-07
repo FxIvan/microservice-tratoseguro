@@ -9,7 +9,7 @@ import (
 	"os"
 	"time"
 
-	mongodb "github.com/fxivan/microservicio/agreement/pkg/models/mongo"
+	mongodb "github.com/fxivan/microservicio/agreement/pkg/models/mongodb"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -19,6 +19,7 @@ type application struct {
 	infoLog       *log.Logger
 	ctpyFileName  *mongodb.CtpyFileNameModel
 	agrDefinition *mongodb.AgrDefinitionModel
+	users         *mongodb.UserSignupModel
 }
 
 func main() {
@@ -26,14 +27,20 @@ func main() {
 	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
 	errorLog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
 
-	mongo_user := os.Getenv("MONGO_USER")
-	mongo_password := os.Getenv("MONGO_PASSWORD")
+	//mongo_user := os.Getenv("MONGO_USER")
+	//mongo_password := os.Getenv("MONGO_PASSWORD")
+
+	mongo_user := "admtratoseguro210814"
+	mongo_password := "LkdU7ZDADARiFEtZiKJUjUeg5Swfyq9dA7qwkqjerkpQZwEvUs"
 
 	serverAddr := flag.String("serverAddr", "", "HTTP server network address")
 	serverPort := flag.Int("serverPort", 4000, "HTTP server network port")
 	mongoURI := flag.String("mongoURI", fmt.Sprintf("mongodb://%s:%s@%s:%d/%s?authSource=admin", mongo_user, mongo_password, "mongo", 27017, "agreement"), "Mongo Connection Uri")
+	//mongoURIuser := flag.String("mongoURIuser", fmt.Sprintf("mongodb://%s:%s@%s:%d/%s?authSource=admin", mongo_user, mongo_password, "0.0.0.0", 27018, "user"), "Mongo Connection Uri for User Database")
+	mongoURIuser := flag.String("mongoURIuser", fmt.Sprintf("mongodb://%s:%s@host.docker.internal:%d/%s?authSource=admin", mongo_user, mongo_password, 27018, "user"), "Mongo Connection Uri for User Database")
 	mongoDBctpyFileName := flag.String("nameDBctpyFilename", "CounterpartFilename", "Name DB")
 	mongoDBagrDefinition := flag.String("nameDBagrDefinition", "AgreementDefinition", "Name DB")
+	mongoDBuser := flag.String("mongoDatabase", "users", "MongoDB database")
 	flag.Parse()
 
 	infoLog.Println("Variable configuration | Port | URI | NameDB")
@@ -46,12 +53,23 @@ func main() {
 		return
 	}
 
+	coUser := options.Client().ApplyURI(*mongoURIuser)
+	clientUser, err := mongo.NewClient(coUser)
+	if err != nil {
+		errorLog.Println(err)
+		return
+	}
+
 	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
 
 	defer cancel()
 
 	err = client.Connect(ctx)
+	if err != nil {
+		panic(err)
+	}
 
+	err = clientUser.Connect(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -61,6 +79,12 @@ func main() {
 			errorLog.Println(err)
 			return
 		}
+
+		if err := clientUser.Disconnect(ctx); err != nil {
+			errorLog.Println(err)
+			return
+		}
+
 	}()
 
 	app := &application{
@@ -72,19 +96,17 @@ func main() {
 		agrDefinition: &mongodb.AgrDefinitionModel{
 			C: client.Database(*mongoDBagrDefinition).Collection("agreement_definition"),
 		},
+		users: &mongodb.UserSignupModel{
+			C: clientUser.Database(*mongoDBuser).Collection("users"),
+		},
 	}
 
 	serverURI := fmt.Sprintf("%s:%d", *serverAddr, *serverPort)
 
-	// Handler para registrar las solicitudes
-
-	// Agrega el middleware de logging al router
-	router := app.routes()
-
 	srv := &http.Server{
 		Addr:         serverURI,
 		ErrorLog:     errorLog,
-		Handler:      router,
+		Handler:      app.routes(),
 		IdleTimeout:  time.Minute,
 		ReadTimeout:  5 * time.Second,
 		WriteTimeout: 10 * time.Second,

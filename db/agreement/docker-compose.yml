@@ -37,7 +37,7 @@ services:
     links:
       - mongo
     ports:
-      - "8080:8081" # Puerto del host:Puerto del contenedor
+      - "8084:8081" # Puerto del host:Puerto del contenedor
     env_file:
       - .env
 networks:
