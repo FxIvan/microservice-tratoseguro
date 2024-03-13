@@ -6,7 +6,6 @@ import (
 	"net/http"
 
 	"github.com/fxivan/microservicio/agreement/pkg/models"
-	"go.mongodb.org/mongo-driver/bson"
 )
 
 func (app *application) searchCTPY(w http.ResponseWriter, r *http.Request) {
@@ -18,7 +17,15 @@ func (app *application) searchCTPY(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	cursor, err := app.users.C.Find(r.Context(), bson.M{})
+	user, errSearch := app.users.SearchUser(&m)
+
+	if errSearch == false {
+		fmt.Print("handlers.go | Error linea 23: ", err)
+		panic(err)
+		return
+	}
+	fmt.Println(user)
+	/*cursor, err := app.users.C.Find(r.Context(), bson.M{})
 	if err != nil {
 		fmt.Print(err)
 		panic(err)
@@ -33,6 +40,6 @@ func (app *application) searchCTPY(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Println(users)
+	fmt.Println(users)*/
 
 }

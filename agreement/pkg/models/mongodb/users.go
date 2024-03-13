@@ -2,6 +2,7 @@ package mongodb
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/fxivan/microservicio/agreement/pkg/models"
 	"go.mongodb.org/mongo-driver/bson"
@@ -12,15 +13,17 @@ type UserSignupModel struct {
 	C *mongo.Collection
 }
 
-func (m UserSignupModel) searchUser(UserSignup *models.UserSignup) (string, bool) {
+func (m UserSignupModel) SearchUser(UserSignup *models.SearchUser) (string, bool) {
 
-	filter := bson.M{"username": UserSignup.Username}
+	filter := bson.M{"email": UserSignup.Email}
 
-	findUsername := m.C.FindOne(context.Background(), filter)
+	cursor := m.C.FindOne(context.Background(), filter)
 
-	if findUsername.Err() != nil {
+	if cursor.Err() != nil {
+		fmt.Println("Usuario no existe")
 		return "El usuario no existe", false
 	}
 
 	return "Usuario existe", true
+
 }
