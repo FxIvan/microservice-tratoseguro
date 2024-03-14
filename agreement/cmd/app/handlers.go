@@ -2,10 +2,10 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"github.com/fxivan/microservicio/agreement/pkg/models"
+	"github.com/fxivan/microservicio/agreement/pkg/response"
 )
 
 func (app *application) searchCTPY(w http.ResponseWriter, r *http.Request) {
@@ -17,29 +17,33 @@ func (app *application) searchCTPY(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, errSearch := app.users.SearchUser(&m)
+	responseSearch, errSearch := app.users.SearchUser(&m)
 
 	if errSearch == false {
-		fmt.Print("handlers.go | Error linea 23: ", err)
-		panic(err)
-		return
-	}
-	fmt.Println(user)
-	/*cursor, err := app.users.C.Find(r.Context(), bson.M{})
-	if err != nil {
-		fmt.Print(err)
-		panic(err)
-		return
-	}
-	defer cursor.Close(r.Context())
+		responseSucc := &response.Response{
+			Status:  true,
+			Message: responseSearch,
+			Code:    200,
+		}
 
-	var users []bson.M
-	if err := cursor.All(r.Context(), &users); err != nil {
-		fmt.Print(err)
-		panic(err)
+		w.Header().Set("Content-Type", "application/json")
+		if err := json.NewEncoder(w).Encode(responseSucc); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
 		return
 	}
 
-	fmt.Println(users)*/
+	responseSucc := &response.Response{
+		Status:  true,
+		Message: responseSearch,
+		Code:    200,
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	if err := json.NewEncoder(w).Encode(responseSucc); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 
 }
