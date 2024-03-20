@@ -55,7 +55,7 @@ func (app *application) createContractPRNE(w http.ResponseWriter, r *http.Reques
 	if err != nil {
 		responsErr := &response.Response{
 			Status:  false,
-			Message: "Error al recibir la informacion",
+			Message: fmt.Sprintf("Error al recibir la informacion %s", err),
 			Code:    400,
 		}
 		w.Header().Set("Content-Type", "application/json")

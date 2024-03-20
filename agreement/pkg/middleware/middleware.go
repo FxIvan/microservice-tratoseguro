@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"net/http"
-	"os"
 	"strings"
 
 	"github.com/golang-jwt/jwt"
@@ -13,7 +12,8 @@ import (
 func AuthMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
-		JWTSecret := os.Getenv("JWT_SECRET")
+		//JWTSecret := os.Getenv("JWT_SECRET")
+		JWTSecret := "G3p3N9OsoQ8tOog5V6jLCdSrZPxmuj7AW5FSvJHKWDC0K_kGr1Tl4aL80aRXpHWR2H3WE0fdYquE5rSakHRhMsu9QAgbPg=="
 		authHeader := strings.Split(r.Header.Get("Authorization"), "Bearer ")
 
 		if len(authHeader) != 2 {
