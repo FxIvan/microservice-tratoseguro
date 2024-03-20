@@ -66,5 +66,10 @@ func (app *application) createContractPRNE(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	fmt.Print("body del createContractPRNE", m)
+	w.Header().Set("Content-Type", "application/json")
+	if err := json.NewEncoder(w).Encode(&m); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	return
 }

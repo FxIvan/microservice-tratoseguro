@@ -61,6 +61,11 @@ type ContractLinkIdObject struct {
 	Password string `json:"password"`
 }
 
+type AddFieldRequiredArray struct {
+	Field string `json:"field"`
+	Type  string `json:"type"`
+}
+
 type ContractDefinitionModel struct {
 	Counterparty          CounterpartyObject          `json:"counterparty"`
 	AgreementText         AgreementTextObject         `json:"agreementText"`
@@ -68,6 +73,7 @@ type ContractDefinitionModel struct {
 	ProposingFirm         ProposingFirmObject         `json:"proposing_firm"`
 	AgreementStatus       AgreementStatusObject       `json:"agreement_status"`
 	ContractLinkId        ContractLinkIdObject        `json:"contractLinkId"`
+	AddFieldRequired      []AddFieldRequiredArray     `json:"add_field_required"`
 }
 
 type SearchUser struct {
