@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/fxivan/microservicio/agreement/pkg/models"
@@ -45,5 +46,25 @@ func (app *application) searchCTPY(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+}
 
+func (app *application) createContractPRNE(w http.ResponseWriter, r *http.Request) {
+	var m models.ContractDefinitionModel
+
+	err := json.NewDecoder(r.Body).Decode(&m)
+	if err != nil {
+		responsErr := &response.Response{
+			Status:  false,
+			Message: "Error al recibir la informacion",
+			Code:    400,
+		}
+		w.Header().Set("Content-Type", "application/json")
+		if err := json.NewEncoder(w).Encode(responsErr); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		return
+	}
+
+	fmt.Print("body del createContractPRNE", m)
 }
