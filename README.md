@@ -38,3 +38,7 @@ Ejemplo que debemos enviar al body:
     }
   ]
 }
+
+Necesitamos enviarle el token ya que la ruta esta proteguida
+![image](https://github.com/FxIvan/microservice-tratoseguro/assets/62405720/a93f3ce7-28b9-4345-9862-cf48aa47a3fc)
+
