@@ -80,5 +80,9 @@ Debe ser un File como PDF
 Ejemplo:
 ![image](https://github.com/FxIvan/microservice-tratoseguro/assets/62405720/ae1ac73a-5b6b-4ccf-a259-619c7085d5df)
 
+## POST /load/img
+Debe ser Imagenes *png , *jpg, *jpeg, etc
+Ejemplo:
+![image](https://github.com/FxIvan/microservice-tratoseguro/assets/62405720/3a0923fe-9b72-425d-83d7-872498473c6a)
 
 
