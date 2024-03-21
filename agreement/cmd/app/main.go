@@ -15,11 +15,11 @@ import (
 )
 
 type application struct {
-	errorLog      *log.Logger
-	infoLog       *log.Logger
-	ctpyFileName  *mongodb.CtpyFileNameModel
-	agrDefinition *mongodb.AgrDefinitionModel
-	users         *mongodb.UserSignupModel
+	errorLog     *log.Logger
+	infoLog      *log.Logger
+	ctpyFileName *mongodb.CtpyFileNameModel
+	agreement    *mongodb.AgreementModel
+	users        *mongodb.UserSignupModel
 }
 
 func main() {
@@ -35,7 +35,7 @@ func main() {
 
 	serverAddr := flag.String("serverAddr", "", "HTTP server network address")
 	serverPort := flag.Int("serverPort", 4000, "HTTP server network port")
-	mongoURI := flag.String("mongoURI", fmt.Sprintf("mongodb://%s:%s@%s:%d/%s?authSource=admin", mongo_user, mongo_password, "mongo", 27017, "agreement"), "Mongo Connection Uri")
+	mongoURI := flag.String("mongoURI", fmt.Sprintf("mongodb://%s:%s@host.docker.internal:%d/%s?authSource=admin", mongo_user, mongo_password, 27019, "agreement"), "Mongo Connection Uri")
 	//mongoURIuser := flag.String("mongoURIuser", fmt.Sprintf("mongodb://%s:%s@%s:%d/%s?authSource=admin", mongo_user, mongo_password, "0.0.0.0", 27018, "user"), "Mongo Connection Uri for User Database")
 	mongoURIuser := flag.String("mongoURIuser", fmt.Sprintf("mongodb://%s:%s@host.docker.internal:%d/%s?authSource=admin", mongo_user, mongo_password, 27018, "user"), "Mongo Connection Uri for User Database")
 	mongoDBctpyFileName := flag.String("nameDBctpyFilename", "CounterpartFilename", "Name DB")
@@ -93,7 +93,7 @@ func main() {
 		ctpyFileName: &mongodb.CtpyFileNameModel{
 			C: client.Database(*mongoDBctpyFileName).Collection("counterpart_filename"),
 		},
-		agrDefinition: &mongodb.AgrDefinitionModel{
+		agreement: &mongodb.AgreementModel{
 			C: client.Database(*mongoDBagrDefinition).Collection("agreement_definition"),
 		},
 		users: &mongodb.UserSignupModel{

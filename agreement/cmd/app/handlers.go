@@ -66,8 +66,25 @@ func (app *application) createContractPRNE(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
+	responseMessage, status := app.agreement.SaveAgreement(&m)
+
+	if status == false {
+		responseErr := &response.Response{
+			Status:  false,
+			Message: responseMessage,
+			Code:    400,
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		if err := json.NewEncoder(w).Encode(responseErr); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		return
+	}
+
 	w.Header().Set("Content-Type", "application/json")
-	if err := json.NewEncoder(w).Encode(&m); err != nil {
+	if err := json.NewEncoder(w).Encode(responseMessage); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
