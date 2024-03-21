@@ -1,3 +1,19 @@
+## POST /auth/signup
+Ejemplo que debemos enviar al body:
+>{
+  "username": "fxivanTESTConEmailTt",
+  "email":"jeffersonlinux666@gmail.com",
+  "password": "contraseña123",
+  "phone": "1136887781",
+  "name":"Ivan",
+  "lastName":"Almendra",
+  "address":"Rio desaguadero",
+  "city":"Quilmes",
+  "country":"Arg",
+  "postalCode":"1882",
+  "building":"_"
+}
+
 ## POST /auth/signin
 Ejemplo que debemos enviar al body:
 >{
