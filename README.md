@@ -73,4 +73,12 @@ Ejemplo que debemos enviar al body:
     //"email":"almendra@gmail.com<<t"
     "email":"jeffersonlinux666@gmail.com"
 }
+>
+
+## POST /load/document
+Debe ser un File como PDF
+Ejemplo:
+![image](https://github.com/FxIvan/microservice-tratoseguro/assets/62405720/ae1ac73a-5b6b-4ccf-a259-619c7085d5df)
+
+
 
