@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"io"
 	"net/http"
 	"os"
@@ -172,9 +173,10 @@ func (app *application) uploadFile(w http.ResponseWriter, r *http.Request) {
 	file, handler, err := r.FormFile("document")
 	if err != nil {
 		app.errorLog.Println("Error al obtener el documento")
+		errorMsg := fmt.Sprintf("Error al cargar el contrato: %s", err)
 		responseError := &response.Response{
 			Status:  false,
-			Message: "Error al cargar el contrato",
+			Message: errorMsg,
 			Code:    400,
 		}
 		response.HttpResponseError(w, responseError)

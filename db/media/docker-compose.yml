@@ -4,7 +4,7 @@ services:
   mongo:
     image: mongo:latest
     restart: unless-stopped
-    container_name: tradetactica-mongo
+    container_name: media-mongo-db
     networks:
       - network1
     environment:
@@ -23,7 +23,7 @@ services:
   mongo-express:
     image: mongo-express:latest
     restart: unless-stopped
-    container_name: tradetactica-express-mongo
+    container_name: microservicio-media-db-api
     networks:
       - network1
     environment:
