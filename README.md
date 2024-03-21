@@ -66,3 +66,11 @@ Ejemplo que debemos enviar al body:
 Necesitamos enviarle el token ya que la ruta esta proteguida
 ![image](https://github.com/FxIvan/microservice-tratoseguro/assets/62405720/a93f3ce7-28b9-4345-9862-cf48aa47a3fc)
 
+#POST /search/user
+Ejemplo que debemos enviar al body:
+>{
+    "iduser":"ialmendra",
+    //"email":"almendra@gmail.com<<t"
+    "email":"jeffersonlinux666@gmail.com"
+}
+
