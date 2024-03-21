@@ -1,3 +1,11 @@
+## POST /auth/signin
+Ejemplo que debemos enviar al body:
+>{
+  "username": "fxivanTESTConEmailTt",
+  "email":"jeffersonlinux666@gmail.com",
+  "password": "contraseña123"
+}
+
 ## POST /create/agreement
 Ejemplo que debemos enviar al body:
 >{
