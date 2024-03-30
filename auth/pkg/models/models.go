@@ -30,3 +30,9 @@ type UserSignup struct {
 	PhotoBack  PhotoObject `json:photoBack`
 	FacePhoto  PhotoObject `json:facePhoto`
 }
+
+type RequestInfoUser struct {
+	Email    string `json:"email"`
+	ID       string `bson:"_id"`
+	Username string `json:"username"`
+}

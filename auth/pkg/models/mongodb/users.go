@@ -2,6 +2,7 @@ package mongodb
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/fxivan/microservicio/auth/pkg/models"
 	//"github.com/fxivan/microservicio/auth/pkg/sendgrid"
@@ -109,4 +110,24 @@ func (m UserSignupModel) PersonalInformation(modelInformation *models.UserSignup
 	}
 
 	return "Informacion actualizada correctamente", true
+}
+
+func (m UserSignupModel) UserInformation(modelRequest *models.RequestInfoUser) (*models.UserSignup, error) {
+
+	filter := bson.M{}
+	if modelRequest.Email != "" {
+		filter["email"] = modelRequest.Email
+	} else {
+		filter["username"] = modelRequest.Username
+	}
+
+	var user models.UserSignup
+
+	err := m.C.FindOne(context.TODO(), filter).Decode(&user)
+	if err != nil {
+		fmt.Println(err)
+		return nil, err
+	}
+
+	return &user, nil
 }

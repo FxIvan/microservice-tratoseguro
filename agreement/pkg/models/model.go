@@ -32,6 +32,8 @@ type CounterpartFilenameModel struct {
 type CounterpartyObject struct {
 	IDRefCTPY     string `json:"idRefCTPY"`
 	EmailCTPY     string `json:"emailCTPY"`
+	Username      string `json:"username"`
+	IDUser        string `json:"iduser"`
 	LinkShareCTPY string `json:"linkShareCTPY"`
 }
 

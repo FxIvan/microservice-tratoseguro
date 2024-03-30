@@ -216,3 +216,39 @@ func (app *application) uploadFiles(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Manejando solicitud en el API Gateway para /auth/info/files", r)
 
 }
+
+func (app *application) returnUserInformation(w http.ResponseWriter, r *http.Request) {
+	var m models.RequestInfoUser
+
+	err := json.NewDecoder(r.Body).Decode(&m)
+
+	if err != nil {
+		app.errorLog.Println(err)
+		responseError := &response.Response{
+			Status:  false,
+			Message: "Error al decodificar el json",
+			Code:    400,
+		}
+		response.HttpResponseError(w, responseError)
+		return
+	}
+
+	userInformation, err := app.users.UserInformation(&m)
+	if err != nil {
+		app.errorLog.Println(err)
+		responseError := &response.Response{
+			Status:  false,
+			Message: userInformation,
+			Code:    400,
+		}
+		response.HttpResponseError(w, responseError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	if err := json.NewEncoder(w).Encode(userInformation); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+}

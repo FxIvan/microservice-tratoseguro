@@ -20,6 +20,7 @@ func (app *application) routes() *mux.Router {
 	//Example. Importar middleware que esta dentro de pkg
 	//r.Handle("/auth/info", middleware.AuthMiddleware(http.HandlerFunc(app.personalInformation))).Methods("POST")
 	r.Handle("/auth/info/files", middleware.AuthMiddleware(http.HandlerFunc(app.uploadFiles))).Methods("POST")
+	r.HandleFunc("/auth/info", app.returnUserInformation).Methods("POST")
 
 	return r
 }
