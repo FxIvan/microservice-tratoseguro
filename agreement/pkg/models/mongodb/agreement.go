@@ -20,31 +20,44 @@ type SearchInfoBody struct {
 	Email    string
 }
 
-func (m AgreementModel) SaveAgreement(contract *models.ContractDefinitionModel) (string, bool) {
+func (m AgreementModel) SaveAgreement(contract *models.ContractDefinitionModel, emailUser string) (string, bool) {
 
-	searchUser := SearchInfoBody{
+	searchUserCTPY := SearchInfoBody{
 		Username: contract.Counterparty.Username,
 		Email:    contract.Counterparty.EmailCTPY,
 	}
 
-	response, err := fetch.Post("http://host.docker.internal:9090/auth/info", &fetch.Config{
+	searchUserPRNE := SearchInfoBody{
+		Email: emailUser,
+	}
+
+	responseCTPY, err := fetch.Post("http://host.docker.internal:9090/auth/info", &fetch.Config{
 		Headers: map[string]string{
 			"Content-Type": "application/json",
 		},
-		Body: searchUser,
+		Body: searchUserCTPY,
+	})
+
+	reponsePRNE, err := fetch.Post("http://host.docker.internal:9090/auth/info", &fetch.Config{
+		Headers: map[string]string{
+			"Content-Type": "application/json",
+		},
+		Body: searchUserPRNE,
 	})
 
 	if err != nil {
 		return "Error al buscar el usuario", false
 	}
 
-	responseJSON, err := response.JSON()
+	responseJSONPRNE, err := reponsePRNE.JSON()
+	responseJSONCTPY, err := responseCTPY.JSON()
 
 	if err != nil {
 		return "Error al buscar el usuario", false
 	}
 
-	bytes := []byte(responseJSON)
+	bytesCTPY := []byte(responseJSONCTPY)
+	bytesPRNE := []byte(responseJSONPRNE)
 
 	type Resultados struct {
 		Username string
@@ -52,19 +65,24 @@ func (m AgreementModel) SaveAgreement(contract *models.ContractDefinitionModel) 
 		ID       string
 	}
 
-	var resultados Resultados
-	json.Unmarshal(bytes, &resultados)
+	var resultadosCTPY Resultados
+	json.Unmarshal(bytesCTPY, &resultadosCTPY)
 
-	fmt.Println(resultados)
-	fmt.Println(resultados.ID)
+	var resultadosPRNE Resultados
+	json.Unmarshal(bytesPRNE, &resultadosPRNE)
 
 	_, err = m.C.InsertOne(context.TODO(), bson.M{
 		"counterparty": bson.M{
 			"idRefCTPY":     contract.Counterparty.IDRefCTPY,
-			"username":      resultados.Username,
-			"emailCTPY":     resultados.Email,
-			"iduser":        resultados.ID,
+			"username":      resultadosCTPY.Username,
+			"emailCTPY":     resultadosCTPY.Email,
+			"iduser":        resultadosCTPY.ID,
 			"linkShareCTPY": contract.Counterparty.LinkShareCTPY,
+		},
+		"proponent": bson.M{
+			"emailPRNE":    resultadosPRNE.Email,
+			"usernamePRNE": resultadosPRNE.Username,
+			"iduserPRNE":   resultadosPRNE.ID,
 		},
 		"agreementText": bson.M{
 			"text": contract.AgreementText.Text,

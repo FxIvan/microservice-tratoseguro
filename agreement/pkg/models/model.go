@@ -37,6 +37,12 @@ type CounterpartyObject struct {
 	LinkShareCTPY string `json:"linkShareCTPY"`
 }
 
+type ProponentObect struct {
+	EmailPRNE string `json:"emailPRNE"`
+	Username  string `json:"usernamePRNE"`
+	IDUser    string `json:"iduserPRNE"`
+}
+
 type AgreementTextObject struct {
 	Text string `json:"text"`
 }
@@ -70,6 +76,7 @@ type AddFieldRequiredArray struct {
 
 type ContractDefinitionModel struct {
 	Counterparty          CounterpartyObject          `json:"counterparty"`
+	Proponent             ProponentObect              `json:"proponent"`
 	AgreementText         AgreementTextObject         `json:"agreementText"`
 	CounterpartySignature CounterpartySignatureObject `json:"counterparty_signature"`
 	ProposingFirm         ProposingFirmObject         `json:"proposing_firm"`

@@ -43,7 +43,7 @@ func AuthMiddleware(next http.Handler) http.Handler {
 			ID, _ := claims["ID"].(string)
 
 			ctx := context.WithValue(r.Context(), "email", email)
-			ctx = context.WithValue(r.Context(), "ID", ID)
+			ctx = context.WithValue(ctx, "ID", ID)
 			next.ServeHTTP(w, r.WithContext(ctx))
 		} else {
 			fmt.Print(err)

@@ -51,6 +51,22 @@ func (app *application) searchCTPY(w http.ResponseWriter, r *http.Request) {
 func (app *application) createContractPRNE(w http.ResponseWriter, r *http.Request) {
 	var m models.ContractDefinitionModel
 
+	email, ok := r.Context().Value("email").(string)
+
+	if !ok {
+		responseErr := &response.Response{
+			Status:  false,
+			Message: "Error al obtener informacion del usuario",
+			Code:    401,
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		if err := json.NewEncoder(w).Encode(responseErr); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+	}
+
 	err := json.NewDecoder(r.Body).Decode(&m)
 	if err != nil {
 		responsErr := &response.Response{
@@ -66,7 +82,7 @@ func (app *application) createContractPRNE(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	responseMessage, status := app.agreement.SaveAgreement(&m)
+	responseMessage, status := app.agreement.SaveAgreement(&m, email)
 
 	if status == false {
 		responseErr := &response.Response{
