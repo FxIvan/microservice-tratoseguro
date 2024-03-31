@@ -104,8 +104,6 @@ Ejemplo:
 
 > {
 
-    {
-
 "counterparty": {
 "IDRefCTPY": "123456789",
 "Username":"almendra210814",
