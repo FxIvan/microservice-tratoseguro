@@ -4,6 +4,8 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"math/rand"
+	"time"
 
 	"github.com/fxivan/microservicio/agreement/pkg/models"
 	"github.com/go-zoox/fetch"
@@ -18,6 +20,29 @@ type AgreementModel struct {
 type SearchInfoBody struct {
 	Username string
 	Email    string
+}
+
+const charsetAlphanumeric = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+const charsetNumeric = "0123456789"
+
+func GenerateUUID(length int, typeOfKey string) string {
+	rand.Seed(time.Now().UnixMicro())
+
+	var charset string
+
+	switch typeOfKey {
+	case "numeric":
+		charset = charsetNumeric
+	case "alphanumeric":
+		charset = charsetAlphanumeric
+	}
+
+	idRandom := make([]byte, length)
+
+	for i := range idRandom {
+		idRandom[i] = charset[rand.Intn(len(charset))]
+	}
+	return string(idRandom)
 }
 
 func (m AgreementModel) SaveAgreement(contract *models.ContractDefinitionModel, emailUser string) (string, bool) {
@@ -71,13 +96,15 @@ func (m AgreementModel) SaveAgreement(contract *models.ContractDefinitionModel, 
 	var resultadosPRNE Resultados
 	json.Unmarshal(bytesPRNE, &resultadosPRNE)
 
+	idRandom := GenerateUUID(16, "alphanumeric")
+
 	_, err = m.C.InsertOne(context.TODO(), bson.M{
+		"contractIdentifier": idRandom,
 		"counterparty": bson.M{
-			"idRefCTPY":     contract.Counterparty.IDRefCTPY,
-			"username":      resultadosCTPY.Username,
-			"emailCTPY":     resultadosCTPY.Email,
-			"iduser":        resultadosCTPY.ID,
-			"linkShareCTPY": contract.Counterparty.LinkShareCTPY,
+			"idRefCTPY": contract.Counterparty.IDRefCTPY,
+			"username":  resultadosCTPY.Username,
+			"emailCTPY": resultadosCTPY.Email,
+			"iduser":    resultadosCTPY.ID,
 		},
 		"proponent": bson.M{
 			"emailPRNE":    resultadosPRNE.Email,
@@ -88,9 +115,9 @@ func (m AgreementModel) SaveAgreement(contract *models.ContractDefinitionModel, 
 			"text": contract.AgreementText.Text,
 		},
 		"counterparty_signature": bson.M{
-			"dni":      contract.CounterpartySignature.DNI,
-			"fullName": contract.CounterpartySignature.FullName,
-			"accepte":  contract.CounterpartySignature.Accepte,
+			"dni":      "",
+			"fullName": "",
+			"accepte":  "",
 		},
 		"proposing_firm": bson.M{
 			"dni":      contract.ProposingFirm.DNI,
@@ -98,12 +125,8 @@ func (m AgreementModel) SaveAgreement(contract *models.ContractDefinitionModel, 
 			"accepte":  contract.ProposingFirm.Accepte,
 		},
 		"agreement_status": bson.M{
-			"status": contract.AgreementStatus.Status,
-			"text":   contract.AgreementStatus.Text,
-		},
-		"contractLinkId": bson.M{
-			"id":       contract.ContractLinkId.ID,
-			"password": contract.ContractLinkId.Password,
+			"status": "Created",
+			"text":   "Contrato creado por el proponente",
 		},
 		"add_field_required": contract.AddFieldRequired,
 	})
